@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "types": ["@types/node"],
+    "allowJs": true,
+    "outDir": "rules/fixture/dist",
+    "baseUrl": ".",
+  },
+  "include": ["./rules/no-analytics.ts"],
+  "extends": "./tsconfig.base.json",
+}

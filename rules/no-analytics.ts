@@ -31,6 +31,8 @@ export const rule = createRule({
         "./tsconfig.eslint.json"
       ),
     });
+
+    // 1. Collect all the analytics imports
     const analyticsFileImports: ImportDeclaration[] = [];
     project.getSourceFiles().forEach((sourceFile) => {
       // find source files with "track.ts" import, we pretend that this is the library
@@ -41,12 +43,14 @@ export const rule = createRule({
       });
     });
 
+    // 2. Find all the references to the `analytics` object
     const refs = analyticsFileImports[0].getDefaultImport()?.findReferencesAsNodes()!;
     const map = new Map<string, Node>();
 
     // put the default import also in map
     map.set("track", analyticsFileImports[0].getDefaultImport()!);
 
+    // 3. Find the outermost scope of the references and store them in a map
     refs.forEach((ref) => {
       if (!ref) return;
 
@@ -64,6 +68,7 @@ export const rule = createRule({
     });
 
     return {
+      // 4. Assert call functions against the map
       CallExpression(node) {
         const { callee } = node;
         if (callee.type === 'MemberExpression') {
